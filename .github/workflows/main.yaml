@@ -1,12 +1,12 @@
 # Your workflow name.
 name: Deploy to heroku.
 
-# Run workflow on every push to main branch.
+# Run workflow on every push to the main branch.
 on:
   push:
     branches: [main]
 
-# Your workflows jobs.
+# Your workflow's jobs.
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,45 +15,42 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      # ** Install the Heroku CLI (required for the release step) **
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
 
-### ⬇ IMPORTANT PART ⬇ ###
-
+      ### ⬇ IMPORTANT PART ⬇ ###
       - name: Build, Push and Release a Docker container to Heroku. # Your custom step name
         uses: gonuit/heroku-docker-deploy@v1.3.3 # GitHub action name (leave it as it is).
         with:
           # Below you must provide variables for your Heroku app.
 
           # The email address associated with your Heroku account.
-          # If you don't want to use repository secrets (which is recommended) you can do:
+          # If you don't want to use repository secrets (which is recommended) you can hardcode it:
           # email: my.email@example.com
           email: ${{ secrets.HEROKU_EMAIL }}
           
-          # Heroku API key associated with provided user's email.
-          # Api Key is available under your Heroku account settings.
+          # Heroku API key associated with your account.
+          # It is available under your Heroku account settings.
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           
-          # Name of the heroku application to which the build is to be sent.
+          # Name of the Heroku application to which the Docker container will be deployed.
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
 
           # (Optional, default: "./")
-          # Dockerfile directory.
-          # For example, if you have a Dockerfile in the root of your project, leave it as follows:
+          # Dockerfile directory: if your Dockerfile is in the repo root, just leave "./"
           dockerfile_directory: ./
 
           # (Optional, default: "Dockerfile")
-          # Dockerfile name.
+          # Dockerfile name:
           dockerfile_name: Dockerfile
 
           # (Optional, default: "")
-          # Additional options of docker build command.
+          # Additional options for the Docker build command:
           docker_options: "--no-cache"
 
           # (Optional, default: "web")
-          # Select the process type for which you want the docker container to be uploaded.
-          # By default, this argument is set to "web".
-          # For more information look at https://devcenter.heroku.com/articles/process-model
+          # Defines which process type gets the Docker container. Defaults to "web" for Heroku.
           process_type: web
-          
-   
-          
-### ⬆ IMPORTANT PART ⬆ ###
+      ### ⬆ IMPORTANT PART ⬆ ###
