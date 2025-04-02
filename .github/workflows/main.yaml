@@ -15,11 +15,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # ** Install the Heroku CLI (required for the release step) **
-      - name: Install Heroku CLI
-        run: |
-          curl https://cli-assets.heroku.com/install.sh | sh
-
       ### ⬇ IMPORTANT PART ⬇ ###
       - name: Build, Push and Release a Docker container to Heroku. # Your custom step name
         uses: gonuit/heroku-docker-deploy@v1.3.3 # GitHub action name (leave it as it is).
