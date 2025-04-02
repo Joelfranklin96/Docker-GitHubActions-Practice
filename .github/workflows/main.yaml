@@ -15,9 +15,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # Install Heroku CLI before deployment
+      # Install Heroku CLI
       - name: Install Heroku CLI
         run: curl https://cli-assets.heroku.com/install.sh | sh
+      
+      # Login to Heroku Container Registry
+      - name: Login to Heroku Container Registry
+        run: |
+          heroku container:login
+          echo "${{ secrets.HEROKU_API_KEY }}" | docker login --username=_ --password-stdin registry.heroku.com
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
       ### ⬇ IMPORTANT PART ⬇ ###
       - name: Build, Push and Release a Docker container to Heroku. # Your custom step name
